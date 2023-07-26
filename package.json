@@ -40,5 +40,8 @@
 		"vite": "^4.4.2",
 		"vitest": "^0.32.2"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@smui/top-app-bar": "^7.0.0-beta.14"
+	}
 }
