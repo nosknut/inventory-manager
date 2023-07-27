@@ -42,6 +42,15 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@smui/top-app-bar": "^7.0.0-beta.14"
+		"@smui/chips": "^7.0.0-beta.14",
+		"@smui/fab": "^7.0.0-beta.14",
+		"@smui/list": "^7.0.0-beta.14",
+		"@smui/paper": "^7.0.0-beta.14",
+		"@smui/textfield": "^7.0.0-beta.14",
+		"@smui/top-app-bar": "^7.0.0-beta.14",
+		"@sveltejs/svelte-virtual-list": "^3.0.1",
+		"@types/lodash": "^4.14.196",
+		"lodash": "^4.17.21",
+		"svelte-local-storage-store": "^0.5.0"
 	}
 }

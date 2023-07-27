@@ -1,8 +1,13 @@
 <script lang="ts">
 	import TopAppBar, { Row, Section, Title, AutoAdjust } from '@smui/top-app-bar';
 	import './styles.css';
+	import Button from '@smui/button';
+	import { db } from '$lib/stores/db';
 
 	let topAppBar: TopAppBar;
+
+	$: blob = new Blob([JSON.stringify($db, null, 2)], { type: 'application/json' });
+	$: url = URL.createObjectURL(blob);
 </script>
 
 <div class="app">
@@ -11,12 +16,16 @@
 			<Section>
 				<Title>Inventory Manager</Title>
 			</Section>
+
+			<Section align="end" toolbar>
+				<Button href="/">Home</Button>
+				<Button href="/items">Items</Button>
+				<Button href={url} download="inventory.json">download items</Button>
+			</Section>
 		</Row>
 	</TopAppBar>
 	<AutoAdjust {topAppBar}>
-		<main>
-			<slot />
-		</main>
+		<slot />
 	</AutoAdjust>
 
 	<style>
