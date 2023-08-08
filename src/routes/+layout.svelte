@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../app.postcss';
 	import './styles.css';
 	import { db } from '$lib/stores/db';
 
@@ -22,7 +23,7 @@
 			</Section>
 		</Row>
 	</TopAppBar>
-	<AutoAdjust {topAppBar}>
+	<AutoAdjust {topappbar}>
 		<slot />
 	</AutoAdjust>
 
