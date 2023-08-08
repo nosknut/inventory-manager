@@ -1,8 +1,4 @@
 <script lang="ts">
-	import { Input } from '@smui/textfield';
-	import Paper from '@smui/paper';
-	import Fab from '@smui/fab';
-	import { Icon } from '@smui/common';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();

@@ -1,8 +1,5 @@
 <script lang="ts">
 	import { itemsList } from '$lib/stores/db';
-	import Paper, { Title, Content } from '@smui/paper';
-
-	import Button from '@smui/button';
 	import _ from 'lodash';
 	import CircularDisplay from '$lib/components/CircularDisplay.svelte';
 </script>

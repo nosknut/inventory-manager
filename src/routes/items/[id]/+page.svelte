@@ -1,16 +1,9 @@
 <script lang="ts">
 	import { db } from '$lib/stores/db';
 	import type { PageData } from './$types';
-	import Textfield from '@smui/textfield';
-	import List, { Item, Text, PrimaryText, SecondaryText, Meta } from '@smui/list';
-	import Paper, { Title, Subtitle, Content } from '@smui/paper';
-
-	import Button, { Label } from '@smui/button';
 	import _ from 'lodash';
 	import { selectedItem } from '$lib/stores/selectedItem';
 	import { onEnter } from '$lib/helpers/onEnter';
-	import IconButton from '@smui/icon-button';
-	import Chip, { Set, TrailingAction, Text as ChipText } from '@smui/chips';
 
 	let newTag = '';
 

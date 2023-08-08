@@ -1,11 +1,7 @@
 <script lang="ts">
-	import List, { Item, Text, PrimaryText, SecondaryText, Meta } from '@smui/list';
 	import { db, itemsList } from '$lib/stores/db';
 	import SearchBox from '$lib/components/SearchBox.svelte';
-	import IconButton from '@smui/icon-button';
 
-	// @ts-ignore
-	import VirtualList from '@sveltejs/svelte-virtual-list';
 	import { goto } from '$app/navigation';
 
 	let searchValue = '';

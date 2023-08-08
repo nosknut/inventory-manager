@@ -1,7 +1,5 @@
 <script lang="ts">
-	import TopAppBar, { Row, Section, Title, AutoAdjust } from '@smui/top-app-bar';
 	import './styles.css';
-	import Button from '@smui/button';
 	import { db } from '$lib/stores/db';
 
 	let topAppBar: TopAppBar;
@@ -27,18 +25,6 @@
 	<AutoAdjust {topAppBar}>
 		<slot />
 	</AutoAdjust>
-
-	<style>
-		/* Hide everything above this component. */
-		:global(#smui-app),
-		:global(body),
-		:global(html) {
-			display: block !important;
-			height: auto !important;
-			width: auto !important;
-			position: static !important;
-		}
-	</style>
 
 	<footer />
 </div>
