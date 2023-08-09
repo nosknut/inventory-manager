@@ -4,6 +4,25 @@
 	import _ from 'lodash';
 	import { selectedItem } from '$lib/stores/selectedItem';
 	import { onEnter } from '$lib/helpers/onEnter';
+	import {
+		Badge,
+		Button,
+		ButtonGroup,
+		Card,
+		DescriptionList,
+		Heading,
+		Input,
+		Label,
+		List,
+		Table,
+		TableBody,
+		TableBodyCell,
+		TableBodyRow,
+		TableHead,
+		TableHeadCell,
+		Textarea
+	} from 'flowbite-svelte';
+	import { goto } from '$app/navigation';
 
 	let newTag = '';
 
@@ -21,6 +40,24 @@
 		if ($selectedItem) {
 			$db.items[data.id] = _.clone($selectedItem);
 		}
+	}
+
+	function deleteItem() {
+		if (!$selectedItem) {
+			return;
+		}
+
+		const confirm = window.confirm('Are you sure you want to delete this item?');
+
+		if (!confirm) {
+			return;
+		}
+
+		$selectedItem = null;
+		delete $db.items[data.id];
+		$db = $db;
+
+		goto('/items');
 	}
 
 	function deleteProperty(key: string) {
@@ -49,7 +86,7 @@
 
 		$selectedItem.tags.push(newTag);
 		$selectedItem = $selectedItem;
-		
+
 		newTag = '';
 
 		save();
@@ -83,103 +120,95 @@
 	}
 </script>
 
-<div class="item-page">
+<div class="grid gap-5 w-full py-10 justify-center">
 	{#if !$selectedItem}
 		<p>Item not found</p>
 		<a href="/item">Back to list</a>
 	{:else}
-		<Paper>
-			<Title>Details</Title>
-			<Content style="display: grid; gap: 20px;">
-				<Textfield
-					style="width: 100%;"
-					on:keydown={onEnter(save)}
-					helperLine$style="width: 100%;"
-					bind:value={$selectedItem.name}
-					label="Name"
-				/>
-				<Textfield
-					style="width: 100%;"
-					helperLine$style="width: 100%;"
-					on:keydown={onEnter(save)}
-					textarea
-					bind:value={$selectedItem.description}
-					label="Description"
-				/>
-				<Button on:click={save} disabled={!hasChanges} variant="raised">
-					<Label>Save changes</Label>
-				</Button>
-			</Content>
-		</Paper>
-		<Paper>
-			<Title>Tags</Title>
-			<Content>
-				<Set chips={$selectedItem.tags} let:chip>
-					<Chip {chip}>
-						<ChipText>{chip}</ChipText>
-						<TrailingAction icon$class="material-icons" on:click={()=>deleteTag(chip)}>cancel</TrailingAction>
-					</Chip>
-				</Set>
-				<div style="display: flex; gap: 10px; padding-bottom: 5px;">
-					<Textfield
-						style="width: 100%;"
-						bind:value={newTag}
-						on:keydown={onEnter(saveNewTag)}
-						label="Name"
-						helperLine$style="width: 100%;"
+		<Card class="max-w-3xl sm:rounded-lg rounded-none">
+			<Heading level="1" customSize="text-2xl">Details</Heading>
+			<div class="grid gap-5 pt-5">
+				<Label>
+					<span>Name</span>
+					<Input on:keydown={onEnter(save)} bind:value={$selectedItem.name} />
+				</Label>
+				<Label>
+					<span>Description</span>
+					<Textarea
+						on:keydown={onEnter(save)}
+						textarea
+						placeholder="Description"
+						rows="4"
+						bind:value={$selectedItem.description}
 					/>
-					<Button on:click={saveNewTag} style="margin: auto 0;" variant="raised">
-						<Label>Add</Label>
-					</Button>
+				</Label>
+				<div class="flex justify-between">
+					<Button on:click={deleteItem} color="red">Delete item</Button>
+					<Button on:click={save} disabled={!hasChanges} variant="raised">Save changes</Button>
 				</div>
-			</Content>
-		</Paper>
-		<Paper>
-			<Title>Properties</Title>
-			<Content>
-				<div style="display: flex; gap: 10px; padding-bottom: 5px;">
-					<Textfield
-						style="width: 100%;"
-						bind:value={newProperty.key}
-						label="Name"
-						helperLine$style="width: 100%;"
-					/>
-					<Textfield
-						style="width: 100%;"
-						bind:value={newProperty.value}
-						on:keydown={onEnter(saveNewProperty)}
-						label="Value"
-					/>
-					<Button on:click={saveNewProperty} style="margin: auto 0;" variant="raised">
-						<Label>Set</Label>
-					</Button>
+			</div>
+		</Card>
+		<Card class="max-w-3xl sm:rounded-lg rounded-none">
+			<Heading level="1" customSize="text-2xl">Tags</Heading>
+			<div class="grid gap-5 pt-5">
+				<div>
+					{#each $selectedItem.tags as tag}
+						<Badge class="m-1" dismissable large on:dismiss={() => deleteTag(tag)}>
+							{tag}
+						</Badge>
+					{/each}
 				</div>
-				{#each Object.entries($selectedItem.properties) as [key, value]}
-					<List nonInteractive separator>
-						<Item>
-							<Text>
-								<PrimaryText>{key}</PrimaryText>
-								<SecondaryText>{value}</SecondaryText>
-							</Text>
-							<Meta>
-								<IconButton class="material-icons" on:click={() => deleteProperty(key)}>
-									delete
-								</IconButton>
-							</Meta>
-						</Item>
-					</List>
-				{/each}
-			</Content>
-		</Paper>
+				<Label>
+					<span>Name</span>
+					<ButtonGroup class="w-full">
+						<Input bind:value={newTag} on:keydown={onEnter(saveNewTag)} />
+						<Button on:click={saveNewTag} color="primary">Add</Button>
+					</ButtonGroup>
+				</Label>
+			</div>
+		</Card>
+		<Card class="max-w-3xl sm:rounded-lg rounded-none">
+			<Heading level="1" customSize="text-2xl">Properties</Heading>
+			<div class="grid gap-5">
+				<div class="flex gap-2 w-full justify-between">
+					<Label>
+						<span>Name</span>
+						<Input bind:value={newProperty.key} />
+					</Label>
+					<Label>
+						<span>Value</span>
+						<Input bind:value={newProperty.value} on:keydown={onEnter(saveNewProperty)} />
+					</Label>
+					<div class="flex flex-col-reverse">
+						<Button on:click={saveNewProperty}>Set</Button>
+					</div>
+				</div>
+
+				{#if Object.keys($selectedItem.properties).length > 0}
+					<Table>
+						<TableHead>
+							<TableHeadCell>Name</TableHeadCell>
+							<TableHeadCell>Value</TableHeadCell>
+							<TableHeadCell>
+								<span class="sr-only">Delete</span>
+							</TableHeadCell>
+						</TableHead>
+						<TableBody tableBodyClass="divide-y">
+							{#each Object.entries($selectedItem.properties) as [key, value]}
+								<TableBodyRow>
+									<TableBodyCell>{key}</TableBodyCell>
+									<TableBodyCell>{value}</TableBodyCell>
+									<TableBodyCell tdClass="px-6">
+										<div class="flex justify-end">
+											<Button size="xs" on:click={() => deleteProperty(key)}>Delete</Button>
+										</div>
+									</TableBodyCell>
+								</TableBodyRow>
+							{/each}
+						</TableBody>
+					</Table>
+				{/if}
+			</div>
+		</Card>
 	{/if}
 </div>
-
-<style>
-	.item-page {
-		max-width: 600px;
-		margin: 20px auto;
-		width: 100%;
-		display: grid;
-		gap: 20px;
-	}
-</style>

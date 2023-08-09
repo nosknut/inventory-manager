@@ -20,6 +20,7 @@
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.20.4",
 		"@types/cookie": "^0.5.1",
+		"@types/uuid": "^9.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"autoprefixer": "^10.4.14",
@@ -46,6 +47,7 @@
 		"flowbite-svelte": "^0.42.0",
 		"lodash": "^4.17.21",
 		"svelte-local-storage-store": "^0.5.0",
-		"tailwind-merge": "^1.14.0"
+		"tailwind-merge": "^1.14.0",
+		"uuid": "^9.0.0"
 	}
 }

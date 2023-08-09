@@ -1,8 +1,17 @@
 <script lang="ts">
-	import { db, itemsList } from '$lib/stores/db';
-	import SearchBox from '$lib/components/SearchBox.svelte';
-
 	import { goto } from '$app/navigation';
+	import { db, itemsList } from '$lib/stores/db';
+	import { v4 as uuidv4 } from 'uuid';
+
+	import {
+		TableSearch,
+		TableHead,
+		TableHeadCell,
+		TableBody,
+		TableBodyRow,
+		TableBodyCell,
+		Button
+	} from 'flowbite-svelte';
 
 	let searchValue = '';
 	$: searchableValues = searchValue.toLowerCase().split(' ');
@@ -16,53 +25,79 @@
 		searchableValues.every((term) => itemIndex[item.id].includes(term))
 	);
 
-	let start: number;
-	let end: number;
+	$: properties = Array.from(new Set(filtered.map((i) => Object.keys(i.properties)).flat()));
 
-	function deleteItem(id: string) {
-		const confirm = window.confirm('Are you sure you want to delete this item?');
-		if (!confirm) {
-			return;
-		}
+	function createItem() {
+		const id = uuidv4();
+		
+		$db.items[id] = {
+			id,
+			name: 'New Item',
+			description: '',
+			tags: [],
+			properties: {}
+		};
 
-		delete $db.items[id];
-		$db.items = $db.items;
+		goto(`/items/${id}`);
 	}
 </script>
 
 <br />
 
-<SearchBox hideSearchButton bind:value={searchValue} />
+<TableSearch placeholder="Search" bind:inputValue={searchValue}>
+	<TableHead>
+		<TableHeadCell>
+			<span class="sr-only"> Edit</span>
+		</TableHeadCell>
+		<TableHeadCell>Name</TableHeadCell>
+		<TableHeadCell>Description</TableHeadCell>
+		<TableHeadCell>Tags</TableHeadCell>
+		{#each properties as property}
+			<TableHeadCell>{property}</TableHeadCell>
+		{/each}
+	</TableHead>
+	<TableBody tableBodyClass="divide-y">
+		{#if filtered.length > 0}
+			{#each filtered as item}
+				<TableBodyRow>
+					<TableBodyCell>
+						<a
+							href="items/{item.id}"
+							class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+						>
+							Edit
+						</a>
+					</TableBodyCell>
+					<TableBodyCell>{item.name}</TableBodyCell>
+					<TableBodyCell>{item.description || 'No description'}</TableBodyCell>
+					<TableBodyCell>{item.tags.join(' | ') || 'No tags'}</TableBodyCell>
+					{#each properties as property}
+						<TableHeadCell>{item.properties[property] || 'N/A'}</TableHeadCell>
+					{/each}
+				</TableBodyRow>
+			{/each}
+		{:else}
+			<TableBodyRow>
+				<TableBodyCell colspan={4}>No items found</TableBodyCell>
+			</TableBodyRow>
+		{/if}
+	</TableBody>
+</TableSearch>
 
-{#if filtered.length > 0}
-	<List threeLine>
-		<VirtualList height="500px" items={filtered} bind:start bind:end let:item>
-			<Item on:click={() => goto(`items/${item.id}`)}>
-				<Text>
-					<PrimaryText>{item.name}</PrimaryText>
-					<SecondaryText>{item.description || 'No description'}</SecondaryText>
-					<SecondaryText>
-						{item.tags.join(' | ') || 'No tags'}
-					</SecondaryText>
-				</Text>
-				<Meta>
-					<IconButton class="material-icons" href="items/{item.id}">edit</IconButton>
-					<IconButton class="material-icons" on:click={() => deleteItem(item.id)}>delete</IconButton
-					>
-				</Meta>
-			</Item>
-		</VirtualList>
-	</List>
-{/if}
-
-{#if filtered.length === 0}
-	<p class="item-counter">No items found</p>
-{:else}
-	<p class="item-counter">Showing {start} to {end} of {filtered.length}</p>
-{/if}
-
-<style>
-	.item-counter {
-		text-align: center;
-	}
-</style>
+<Button pill class="p-4 fixed bottom-5 right-5" on:click={createItem}>
+	<svg
+		class="w-6 h-6 text-gray-800 dark:text-white"
+		aria-hidden="true"
+		xmlns="http://www.w3.org/2000/svg"
+		fill="none"
+		viewBox="0 0 18 18"
+	>
+		<path
+			stroke="currentColor"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M9 1v16M1 9h16"
+		/>
+	</svg>
+</Button>
